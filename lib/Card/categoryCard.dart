@@ -31,32 +31,25 @@ class categoryCard extends StatelessWidget {
       },
       child: Container(
         width: density(108),
-        height: density(116),
+        height: density(137),
         margin: EdgeInsets.only(right: density(12)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(density(7)),
-          color: Color(0xFFE5FAF3),
         ),
-        child: Column(
+        child: SizedBox(
+          width: density(90),
+          child: Image.network(
+            image,
+            fit: BoxFit.fill,
+          ),
+        ), /*Column(
           children: [
             sizeheight(density(8)),
             Expanded(
-              child: SizedBox(
-                width: density(90),
-                child: Image.network(
-                  image,
-                  fit: BoxFit.fill,
-                ),
-              ),
+              child: 
             ),
-            sizeheight(density(3)),
-            Text(
-              name,
-              textAlign: TextAlign.center,
-            ),
-            sizeheight(density(8)),
           ],
-        ),
+        ),*/
       ),
     );
   }

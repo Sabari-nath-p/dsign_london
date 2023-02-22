@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bottom_bar/bottom_bar.dart';
 import 'package:dsign_london/Card/catBox.dart';
 import 'package:dsign_london/Constant/Color.dart';
 import 'package:dsign_london/Constant/custom.dart';
@@ -106,6 +107,9 @@ class _HomeState extends State<Home> {
   }
 
   List promoImage = [];
+
+  int bottomOption = 0;
+
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
@@ -117,13 +121,42 @@ class _HomeState extends State<Home> {
       sqty = count.toString();
 
     return Scaffold(
+      bottomNavigationBar: BottomBar(
+        selectedIndex: bottomOption,
+        onTap: (int index) {
+          setState(() {
+            bottomOption = index;
+          });
+        },
+        items: <BottomBarItem>[
+          BottomBarItem(
+            icon: Icon(Icons.home),
+            title: Text('Home'),
+            activeColor: primaryColor(),
+          ),
+          BottomBarItem(
+              icon: Icon(Icons.category),
+              title: Text('Category'),
+              activeColor: primaryColor()),
+          BottomBarItem(
+            icon: Icon(Icons.local_mall),
+            title: Text('Cart'),
+            activeColor: primaryColor(),
+          ),
+          BottomBarItem(
+            icon: Icon(Icons.person),
+            title: Text('Account'),
+            activeColor: primaryColor(),
+          ),
+        ],
+      ),
       body: Container(
         width: w,
         height: h,
         child: Stack(
           children: [
             Container(
-              color: primaryColor(),
+              color: Colors.white,
               width: w,
               height: h,
               child: Column(
@@ -166,19 +199,19 @@ class _HomeState extends State<Home> {
                                         border:
                                             Border.all(color: Colors.white)),
                                     child: CircleAvatar(
-                                      backgroundColor: (profileUrl ==
-                                              "http://api.ecom.alpha.logidots.com/storage/3051/conversions/R-thumbnail.jpg")
-                                          ? Colors.white24
-                                          : Colors.white,
+                                      //  backgroundColor: (profileUrl ==
+                                      //            "http://api.ecom.alpha.logidots.com/storage/3051/conversions/R-thumbnail.jpg")
+                                      //       ? Colors.white24
+                                      //       : Colors.white,
                                       child: ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(100),
                                         child: Image.network(
                                           profileUrl,
-                                          color: (profileUrl ==
-                                                  "http://api.ecom.alpha.logidots.com/storage/3051/conversions/R-thumbnail.jpg")
-                                              ? Colors.white
-                                              : null,
+                                          //   color: (profileUrl ==
+                                          //           "http://api.ecom.alpha.logidots.com/storage/3051/conversions/R-thumbnail.jpg")
+                                          //       ? Colors.white
+                                          //      : null,
                                           fit: BoxFit.fill,
                                         ),
                                       ),
@@ -201,7 +234,7 @@ class _HomeState extends State<Home> {
                             child: Icon(
                               Icons.notifications_none_outlined,
                               size: 40,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -218,8 +251,8 @@ class _HomeState extends State<Home> {
                     height: 48,
                     margin: EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(70)),
+                        color: Color(0XFFEEECEC),
+                        borderRadius: BorderRadius.circular(10)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -229,7 +262,7 @@ class _HomeState extends State<Home> {
                         ),
                         Icon(
                           Icons.search,
-                          color: offsetWhite(),
+                          color: Colors.black,
                         ),
                         const SizedBox(
                           width: 20.7,
@@ -244,7 +277,7 @@ class _HomeState extends State<Home> {
                             },
                             decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: "Search for items in cart",
+                                hintText: "What are looking ",
                                 hintStyle: TextStyle(
                                     color: offsetWhite(),
                                     fontSize: 15,
@@ -252,13 +285,9 @@ class _HomeState extends State<Home> {
                                     fontFamily: 'Montserrat')),
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
                   Expanded(
                       child: Container(
                     height: double.infinity,
@@ -296,11 +325,10 @@ class _HomeState extends State<Home> {
                                   )),
                             ),
                           sizeheight(6),
-                          flashSale(
+                          catBox(
                             notify: notify,
                           ),
-                          sizeheight(1),
-                          catBox(
+                          flashSale(
                             notify: notify,
                           ),
                           sizeheight(6),

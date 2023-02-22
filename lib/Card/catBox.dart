@@ -80,9 +80,14 @@ class _catBoxState extends State<catBox> {
           ),
           sizeheight(density(10)),
           sizeheight(density(14)),
-          Wrap(
-            runSpacing: density(10),
-            children: [for (count; count < plength; count++) data[count]],
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                sizewidth(10),
+                for (count; count < plength; count++) data[count]
+              ],
+            ),
           )
         ],
       ),
