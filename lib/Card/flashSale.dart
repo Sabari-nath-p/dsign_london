@@ -48,12 +48,12 @@ class _flashSaleState extends State<flashSale> {
         ? Container()
         : Container(
             width: density(390),
-            height: density(274),
+            height: density(350),
             padding: EdgeInsets.only(
                 left: density(13),
                 right: density(13),
                 top: density(8),
-                bottom: density(20)),
+                bottom: density(18)),
             //  color: Color.fromARGB(175, 255, 255, 255),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

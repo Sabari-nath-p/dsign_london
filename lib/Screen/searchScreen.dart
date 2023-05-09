@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 
+import '../Card/productbox1.dart';
 import '../Constant/link.dart';
 
 class searchScreen extends StatefulWidget {
@@ -90,12 +91,13 @@ class _searchScreenState extends State<searchScreen> {
             try {
               setState(() {
                 if (v['name'] != null) {
-                  Product.add(productBox(pdata: v, notify: widget.notify));
+                  Product.add(productbox1(pdata: v, notify: widget.notify));
                 }
               });
             } on Exception catch (_, e) {}
           }
           setState(() {
+            Reloading = false;
             loading = 1;
           });
         }
@@ -111,6 +113,7 @@ class _searchScreenState extends State<searchScreen> {
     }
   }
 
+  bool Reloading = false;
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
@@ -166,6 +169,7 @@ class _searchScreenState extends State<searchScreen> {
                                       controller: searchController,
                                       onSubmitted: (value) {
                                         setState(() {
+                                          Reloading = true;
                                           Product = [];
                                         });
                                         loadProduct(value);
@@ -188,17 +192,39 @@ class _searchScreenState extends State<searchScreen> {
                           ),
                           if (Product.isNotEmpty)
                             Expanded(
-                                child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  for (int i = 0; i < Product.length; i++)
-                                    Product[i],
-                                  sizeheight(20),
-                                  if (count > 0) sizeheight(105)
-                                ],
+                                child: Container(
+                              child: SingleChildScrollView(
+                                child: Container(
+                                  alignment: (Product.length == 1)
+                                      ? Alignment.topLeft
+                                      : null,
+                                  margin: EdgeInsets.only(
+                                      top: 20,
+                                      left: (Product.length == 1) ? 25 : 0),
+                                  child: Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.start,
+                                    runSpacing: 10,
+                                    spacing: 20,
+                                    children: [
+                                      for (int i = 0; i < Product.length; i++)
+                                        Product[i],
+                                      if (count > 0) sizeheight(105)
+                                    ],
+                                  ),
+                                ),
                               ),
                             )),
-                          if (Product.isEmpty)
+                          if (Reloading && Product.isEmpty && loading == 1)
+                            Container(
+                              margin: EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.aspectRatio *
+                                      800),
+                              alignment: Alignment.center,
+                              child: LoadingAnimationWidget.staggeredDotsWave(
+                                  color: primaryColor(), size: 40),
+                            ),
+                          if (Product.isEmpty && !Reloading)
                             noData("Sorry, No Product Found :( ")
                         ],
                       ),

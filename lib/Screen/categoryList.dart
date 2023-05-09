@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dsign_london/Card/productBox.dart';
+import 'package:dsign_london/Card/productbox1.dart';
 import 'package:dsign_london/Constant/Color.dart';
 import 'package:dsign_london/Constant/custom.dart';
 import 'package:dsign_london/Constant/link.dart';
@@ -118,7 +119,7 @@ class _categoryListState extends State<categoryList> {
             for (var v in js['data']) {
               try {
                 if (v['name'] != null) {
-                  Product.add(productBox(pdata: v, notify: widget.notify));
+                  Product.add(productbox1(pdata: v, notify: widget.notify));
                 }
               } on Exception catch (_, e) {
                 print(e);
@@ -292,14 +293,18 @@ class _categoryListState extends State<categoryList> {
                             ),
                           if (Product.isEmpty && catLoading == false)
                             noData("Sorry, No Product Found :("),
-                          Expanded(
-                              child: ListView(
-                            children: [
-                              for (int i = 0; i < Product.length; i++)
-                                Product[i],
-                              if (count > 0) sizeheight(105)
-                            ],
-                          )),
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Wrap(
+                              runSpacing: 10,
+                              spacing: 20,
+                              children: [
+                            for (int i = 0; i < Product.length; i++)
+                              Product[i],
+                            if (count > 0) sizeheight(105)
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

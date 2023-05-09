@@ -7,19 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'dart:math' as math;
 
-class flashProductCard extends StatefulWidget {
+class productbox1 extends StatefulWidget {
   var pdata;
   ValueNotifier notify;
-  flashProductCard({super.key, required this.pdata, required this.notify});
+  productbox1({super.key, required this.pdata, required this.notify});
 
   @override
-  State<flashProductCard> createState() => _flashProductCardState(pdata: pdata);
+  State<productbox1> createState() => _productbox1State(pdata: pdata);
 }
 
-class _flashProductCardState extends State<flashProductCard> {
+class _productbox1State extends State<productbox1> {
   var pdata;
-  _flashProductCardState({required this.pdata});
+  _productbox1State({required this.pdata});
 
   double saveAmount = 0;
   int savepercentage = 0;
@@ -43,7 +44,7 @@ class _flashProductCardState extends State<flashProductCard> {
           ? double.parse(pdata["sale_price"].toString())
           : price;
       unit = pdata["unit"];
-      imageLink = pdata["image"]["original"];
+      imageLink = pdata["image"]["thumbnail"];
       if (price != 0) {
         saveAmount = price - salePrice;
         double temp = ((salePrice * 100) / price);
@@ -99,6 +100,7 @@ class _flashProductCardState extends State<flashProductCard> {
     loadData();
     UpdateCart();
     checkInCart();
+    print(pdata);
   }
 
   @override
@@ -118,8 +120,8 @@ class _flashProductCardState extends State<flashProductCard> {
       },
       child: Container(
         margin: EdgeInsets.only(top: density(5), bottom: density(5)),
-        height: density(274),
-        width: density(200),
+        height: density(240),
+        width: density(160),
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
             color: Colors.black12, //color of shadow
@@ -137,6 +139,19 @@ class _flashProductCardState extends State<flashProductCard> {
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network("$imageLink"))),
+            if (savepercentage != 0)
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Text(
+                  "${savepercentage}% off",
+                  style: TextStyle(
+                      fontSize: density(13),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.green,
+                      fontFamily: "Montserrat"),
+                ),
+              ),
             Positioned(
                 height: 60,
                 left: 2,
@@ -149,15 +164,13 @@ class _flashProductCardState extends State<flashProductCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       sizeheight(density(5)),
-                      Expanded(
-                        child: Text(
-                          "$name",
-                          softWrap: true,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: density(17),
-                              fontFamily: "Montserrat"),
-                        ),
+                      Text(
+                        "$name",
+                        softWrap: true,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: density(15),
+                            fontFamily: "Poppins"),
                       ),
                       sizeheight(density(5)),
                       Row(
@@ -170,30 +183,18 @@ class _flashProductCardState extends State<flashProductCard> {
                                 : '₹$priceVaritation',
                             softWrap: true,
                             style: TextStyle(
-                                fontSize: density(15),
+                                fontSize: density(14),
                                 fontWeight: FontWeight.w500,
                                 fontFamily: "Montserrat"),
                           ),
                           sizewidth(5),
                           if (salePrice != price)
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                "₹${price}",
-                                style: TextStyle(
-                                    fontSize: density(14),
-                                    decoration: TextDecoration.lineThrough,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Montserrat"),
-                              ),
-                            ),
-                          if (savepercentage != 0)
                             Text(
-                              "${savepercentage}% off",
+                              "₹${price}",
                               style: TextStyle(
-                                  fontSize: density(10),
+                                  fontSize: density(13),
+                                  decoration: TextDecoration.lineThrough,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.green,
                                   fontFamily: "Montserrat"),
                             ),
                           sizewidth(30)

@@ -24,11 +24,13 @@ import '../Constant/timeFinder.dart';
 
 addressData? ad = null;
 List couponData = ["0", 0];
+
 ValueNotifier checknotify = ValueNotifier(0);
 
 class cart extends StatefulWidget {
   ValueNotifier notify;
-  cart({super.key, required this.notify});
+  bool isHome;
+  cart({super.key, required this.notify, this.isHome = false});
 
   @override
   State<cart> createState() => _cartState();
@@ -361,7 +363,7 @@ class _cartState extends State<cart> {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          color: Colors.white24,
+          color: (itemTotal != 0) ? Colors.white24 : Colors.white,
           child: Column(
             children: [
               Container(
@@ -374,19 +376,20 @@ class _cartState extends State<cart> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     sizewidth(density(16)),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: CircleAvatar(
-                          radius: density(20),
-                          backgroundColor: Color.fromARGB(223, 240, 240, 235)
-                              .withOpacity(0.2),
-                          child: Icon(
-                            Icons.arrow_back_ios_new,
-                            color: Colors.white,
-                          )),
-                    ),
+                    if (Navigator.canPop(context))
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: CircleAvatar(
+                            radius: density(20),
+                            backgroundColor: Color.fromARGB(223, 240, 240, 235)
+                                .withOpacity(0.2),
+                            child: Icon(
+                              Icons.arrow_back_ios_new,
+                              color: Colors.white,
+                            )),
+                      ),
                     sizewidth(density(28)),
                     Text(
                       "My Cart",
@@ -415,8 +418,12 @@ class _cartState extends State<cart> {
                             color: Colors.white,
                             child: Column(
                               children: [
+                                if (itemTotal == 0)
+                                  SizedBox(
+                                    height: density(250),
+                                  ),
                                 Container(
-                                    color: Colors.white,
+                                    color: null,
                                     alignment: Alignment.center,
                                     height: 100,
                                     child: Image.asset(
@@ -429,264 +436,156 @@ class _cartState extends State<cart> {
                               ],
                             )),
                       sizeheight(density(6)),
-                      /*coupon  */ Container(
-                        width: density(390),
-                        height: density(66),
-                        color: Colors.white,
-                        child: Row(
-                          children: [
-                            sizewidth(density(16)),
-                            Container(
-                                width: density(30),
-                                height: density(30),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/image/discountbadge.png"))),
-                                child: Text(
-                                  "%",
-                                  style: TextStyle(
-                                      fontSize: density(16),
-                                      fontFamily: "Montserrat",
-                                      color: Colors.white),
-                                )),
-                            sizewidth(density(19)),
-                            if (couponData.isEmpty)
-                              Expanded(
-                                child: Text(
-                                  "Apply Offers / Coupon",
-                                  style: TextStyle(
-                                    fontSize: density(16),
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: "Montserrat",
-                                  ),
-                                ),
-                              ),
-                            if (!couponData.isEmpty)
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      couponData[0],
-                                      style: TextStyle(
+                      /*coupon  */ if (!widget.isHome)
+                        Container(
+                          width: density(390),
+                          height: density(66),
+                          color: Colors.white,
+                          child: Row(
+                            children: [
+                              sizewidth(density(16)),
+                              Container(
+                                  width: density(30),
+                                  height: density(30),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              "assets/image/discountbadge.png"))),
+                                  child: Text(
+                                    "%",
+                                    style: TextStyle(
                                         fontSize: density(16),
-                                        fontWeight: FontWeight.w600,
                                         fontFamily: "Montserrat",
+                                        color: Colors.white),
+                                  )),
+                              sizewidth(density(19)),
+                              if (couponData.isEmpty)
+                                Expanded(
+                                  child: Text(
+                                    "Apply Offers / Coupon",
+                                    style: TextStyle(
+                                      fontSize: density(16),
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Montserrat",
+                                    ),
+                                  ),
+                                ),
+                              if (!couponData.isEmpty)
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        couponData[0],
+                                        style: TextStyle(
+                                          fontSize: density(16),
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "Montserrat",
+                                        ),
                                       ),
-                                    ),
-                                    sizeheight(5),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "₹${couponData[1]}",
-                                          style: TextStyle(
-                                            fontSize: density(12),
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: "Montserrat",
+                                      sizeheight(5),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "₹${couponData[1]}",
+                                            style: TextStyle(
+                                              fontSize: density(12),
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: "Montserrat",
+                                            ),
                                           ),
-                                        ),
-                                        sizewidth(2),
-                                        Text(
-                                          "Coupon saving",
-                                          style: TextStyle(
-                                            fontSize: density(12),
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "Montserrat",
+                                          sizewidth(2),
+                                          Text(
+                                            "Coupon saving",
+                                            style: TextStyle(
+                                              fontSize: density(12),
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: "Montserrat",
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              if (!couponData.isEmpty)
+                                InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        couponData.clear();
+                                      });
+                                    },
+                                    child: Icon(Icons.close)),
+                              if (couponData.isEmpty)
+                                InkWell(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (ctx) => coupon(
+                                                    notify: widget.notify,
+                                                  )));
+                                    },
+                                    child: Icon(Icons.arrow_forward_ios)),
+                              sizewidth(density(20))
+                            ],
+                          ),
+                        ),
+                      sizeheight(density(5)),
+                      /*payment details */ if (itemTotal != 0)
+                        Container(
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          width: density(390),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              sizeheight(density(12)),
+                              Text(
+                                "    Payment Details",
+                                style: TextStyle(
+                                  fontSize: density(18),
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: "Montserrat",
                                 ),
                               ),
-                            if (!couponData.isEmpty)
-                              InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      couponData.clear();
-                                    });
-                                  },
-                                  child: Icon(Icons.close)),
-                            if (couponData.isEmpty)
-                              InkWell(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (ctx) => coupon(
-                                                  notify: widget.notify,
-                                                )));
-                                  },
-                                  child: Icon(Icons.arrow_forward_ios)),
-                            sizewidth(density(20))
-                          ],
+                              paymentBox(
+                                  "Item Total", "₹$itemTotal", Colors.black),
+                              paymentBox("Partner Delivery charge",
+                                  "₹$deliveryCharge", Colors.greenAccent),
+                              paymentBox(
+                                  "Coupon Discount",
+                                  (couponData.length > 0)
+                                      ? "₹${couponData[1]}"
+                                      : "₹0",
+                                  Colors.redAccent),
+                              paymentBox(
+                                  "Subtotal", "₹${subtotal}", Colors.black),
+                              SizedBox()
+                            ],
+                          ),
                         ),
-                      ),
-                      sizeheight(density(5)),
-                      /*payment details */ Container(
-                        color: Color.fromRGBO(255, 255, 255, 1),
-                        width: density(390),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            sizeheight(density(12)),
-                            Text(
-                              "    Payment Details",
-                              style: TextStyle(
-                                fontSize: density(18),
-                                fontWeight: FontWeight.w600,
-                                fontFamily: "Montserrat",
-                              ),
-                            ),
-                            paymentBox(
-                                "Item Total", "₹$itemTotal", Colors.black),
-                            paymentBox("Partner Delivery charge",
-                                "₹$deliveryCharge", Colors.greenAccent),
-                            paymentBox(
-                                "Coupon Discount",
-                                (couponData.length > 0)
-                                    ? "₹${couponData[1]}"
-                                    : "₹0",
-                                Colors.redAccent),
-                            paymentBox(
-                                "Subtotal", "₹${subtotal}", Colors.black),
-                            SizedBox()
-                          ],
-                        ),
-                      ),
                       sizeheight(density(4)),
-                      /*wallet */ Container(
-                        color: Colors.white,
-                        width: density(390),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            sizeheight(density(12)),
-                            Text(
-                              "    Wallet",
-                              style: TextStyle(
-                                fontSize: density(18),
-                                fontWeight: FontWeight.w600,
-                                fontFamily: "Montserrat",
+                      /*wallet */ if (!widget.isHome)
+                        Container(
+                          color: Colors.white,
+                          width: density(390),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              sizeheight(density(12)),
+                              Text(
+                                "    Wallet",
+                                style: TextStyle(
+                                  fontSize: density(18),
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: "Montserrat",
+                                ),
                               ),
-                            ),
-                            sizeheight(density(10)),
-                            Container(
-                              width: density(390),
-                              height: density(45),
-                              padding: EdgeInsets.only(
-                                  left: density(19), right: density(16)),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.withOpacity(.35),
-                                          width: 0.4))),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                      child: Text(
-                                    "Wallet Points ",
-                                    style: TextStyle(
-                                      fontSize: density(16),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Montserrat",
-                                    ),
-                                  )),
-                                  SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child:
-                                          Image.asset("assets/icons/coin.png")),
-                                  sizewidth(3),
-                                  Text(
-                                    "$walletPoint",
-                                    style: TextStyle(
-                                      fontSize: density(16),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Montserrat",
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              width: density(390),
-                              height: density(45),
-                              padding: EdgeInsets.only(
-                                  left: density(19), right: density(16)),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.withOpacity(.35),
-                                          width: 0.4))),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                      child: Text(
-                                    "Wallet Currency  ",
-                                    style: TextStyle(
-                                      fontSize: density(16),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Montserrat",
-                                    ),
-                                  )),
-                                  Text(
-                                    "₹$walletCurrency",
-                                    style: TextStyle(
-                                      fontSize: density(16),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Montserrat",
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              width: density(390),
-                              height: density(45),
-                              padding: EdgeInsets.only(
-                                  left: density(5), right: density(16)),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.withOpacity(.35),
-                                          width: 0.4))),
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    activeColor: primaryColor(),
-                                    value: addWalletAmount,
-                                    onChanged: ((value) {
-                                      setState(() {
-                                        if (addWalletAmount)
-                                          addWalletAmount = false;
-                                        else if (walletPoint != 0) {
-                                          addWalletAmount = true;
-                                        } else {
-                                          Fluttertoast.showToast(
-                                              msg:
-                                                  "no Wallet Point available ");
-                                        }
-                                      });
-                                    }),
-                                  ),
-                                  Text(
-                                    "Do you want use wallet",
-                                    style: TextStyle(
-                                      fontSize: density(14),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Montserrat",
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {},
-                              child: Container(
+                              sizeheight(density(10)),
+                              Container(
                                 width: density(390),
                                 height: density(45),
                                 padding: EdgeInsets.only(
@@ -700,30 +599,144 @@ class _cartState extends State<cart> {
                                   children: [
                                     Expanded(
                                         child: Text(
-                                      "Total",
+                                      "Wallet Points ",
                                       style: TextStyle(
-                                        fontSize: density(18),
-                                        fontWeight: FontWeight.w600,
+                                        fontSize: density(16),
+                                        fontWeight: FontWeight.w500,
                                         fontFamily: "Montserrat",
                                       ),
                                     )),
+                                    SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: Image.asset(
+                                            "assets/icons/coin.png")),
+                                    sizewidth(3),
                                     Text(
-                                      "₹${total}",
+                                      "$walletPoint",
                                       style: TextStyle(
-                                        fontSize: density(18),
-                                        fontWeight: FontWeight.w600,
+                                        fontSize: density(16),
+                                        fontWeight: FontWeight.w500,
                                         fontFamily: "Montserrat",
                                       ),
                                     )
                                   ],
                                 ),
                               ),
-                            ),
-                          ],
+                              Container(
+                                width: density(390),
+                                height: density(45),
+                                padding: EdgeInsets.only(
+                                    left: density(19), right: density(16)),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.grey.withOpacity(.35),
+                                            width: 0.4))),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: Text(
+                                      "Wallet Currency  ",
+                                      style: TextStyle(
+                                        fontSize: density(16),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Montserrat",
+                                      ),
+                                    )),
+                                    Text(
+                                      "₹$walletCurrency",
+                                      style: TextStyle(
+                                        fontSize: density(16),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Montserrat",
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: density(390),
+                                height: density(45),
+                                padding: EdgeInsets.only(
+                                    left: density(5), right: density(16)),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.grey.withOpacity(.35),
+                                            width: 0.4))),
+                                child: Row(
+                                  children: [
+                                    Checkbox(
+                                      activeColor: primaryColor(),
+                                      value: addWalletAmount,
+                                      onChanged: ((value) {
+                                        setState(() {
+                                          if (addWalletAmount)
+                                            addWalletAmount = false;
+                                          else if (walletPoint != 0) {
+                                            addWalletAmount = true;
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    "no Wallet Point available ");
+                                          }
+                                        });
+                                      }),
+                                    ),
+                                    Text(
+                                      "Do you want use wallet",
+                                      style: TextStyle(
+                                        fontSize: density(14),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Montserrat",
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {},
+                                child: Container(
+                                  width: density(390),
+                                  height: density(45),
+                                  padding: EdgeInsets.only(
+                                      left: density(19), right: density(16)),
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                              color:
+                                                  Colors.grey.withOpacity(.35),
+                                              width: 0.4))),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                        "Total",
+                                        style: TextStyle(
+                                          fontSize: density(18),
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "Montserrat",
+                                        ),
+                                      )),
+                                      Text(
+                                        "₹${total}",
+                                        style: TextStyle(
+                                          fontSize: density(18),
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "Montserrat",
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                       sizeheight(density(6)),
-                      /*address details */ if (addressList.length == 0)
+                      /*address details */ if (addressList.length == 0 &&
+                          !widget.isHome)
                         Container(
                           width: density(390),
                           color: Colors.white,
@@ -771,7 +784,7 @@ class _cartState extends State<cart> {
                             ],
                           ),
                         ),
-                      if (addressList.length > 0)
+                      if (addressList.length > 0 && !widget.isHome)
                         /*address details */ Container(
                           width: density(390),
                           color: Colors.white,
@@ -826,206 +839,250 @@ class _cartState extends State<cart> {
                             ],
                           ),
                         ),
-                      /*delivery option */ Container(
-                        color: Colors.white,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              sizewidth(density(20)),
-                              for (int i = 0; i < orderOption.length; i++)
-                                if (orderOption[i][6])
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        checkout();
-
-                                        orderOptionSelector = i;
-                                        //  deliveryCharge = orderOption[i][1];
-                                      });
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      height: density(66),
-                                      margin: EdgeInsets.only(
-                                          right: density(10),
-                                          bottom: density(10)),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: density(6)),
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          border: Border.all(
-                                              color: (orderOptionSelector == i)
-                                                  ? primaryColor()
-                                                  : Colors.grey),
-                                          borderRadius: BorderRadius.circular(
-                                              density(7))),
-                                      child: Stack(
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                orderOption[i][0],
-                                                style: TextStyle(
-                                                  fontSize: density(15),
-                                                  color:
-                                                      (orderOptionSelector == i)
-                                                          ? primaryColor()
-                                                          : Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontFamily: "Montserrat",
-                                                ),
-                                              ),
-                                              sizeheight(density(5)),
-                                              Text(
-                                                (orderOption[i][2] != null)
-                                                    ? "${orderOption[i][2]}-${orderOption[i][3]}"
-                                                    : "90min Delivery",
-                                                style: TextStyle(
-                                                  fontSize: density(13),
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: "Montserrat",
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          if (!orderOption[i][5] &&
-                                              orderOption[i][2] != null)
-                                            Positioned(
-                                              top: 5,
-                                              right: density(2),
-                                              child: Text(
-                                                "Next Day",
-                                                style: TextStyle(fontSize: 10),
-                                              ),
-                                            )
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                            ],
-                          ),
-                        ),
-                      ),
-                      sizeheight(6),
-                      if (total != 0) /*payment details */
+                      /*delivery option */ if (!widget.isHome)
                         Container(
                           color: Colors.white,
-                          width: density(390),
-                          padding: EdgeInsets.only(
-                              left: density(20), top: density(10)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Payment Methode",
-                                style: TextStyle(
-                                  fontSize: density(16),
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: "Montserrat",
-                                ),
-                              ),
-                              sizeheight(density(19)),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(children: [
-                                  for (int i = 0; i < paymentMethod.length; i++)
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                sizewidth(density(20)),
+                                for (int i = 0; i < orderOption.length; i++)
+                                  if (orderOption[i][6])
                                     InkWell(
                                       onTap: () {
                                         setState(() {
-                                          paymentMethodSelector = i;
+                                          checkout();
+
+                                          orderOptionSelector = i;
+                                          //  deliveryCharge = orderOption[i][1];
                                         });
                                       },
                                       child: Container(
+                                        alignment: Alignment.center,
+                                        height: density(66),
                                         margin: EdgeInsets.only(
-                                            right: density(20),
+                                            right: density(10),
                                             bottom: density(10)),
                                         padding: EdgeInsets.symmetric(
-                                            horizontal: density(18),
-                                            vertical: density(16)),
+                                            horizontal: density(6)),
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                                density(5)),
+                                            color: Colors.white,
                                             border: Border.all(
                                                 color:
-                                                    (paymentMethodSelector == i)
+                                                    (orderOptionSelector == i)
                                                         ? primaryColor()
-                                                        : Colors.grey
-                                                            .withOpacity(0.4))),
-                                        child: Text(
-                                          paymentMethod[i][0],
-                                          style: TextStyle(
-                                            fontSize: density(14),
-                                            color: (paymentMethodSelector == i)
-                                                ? primaryColor()
-                                                : Colors.black,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: "Montserrat",
-                                          ),
+                                                        : Colors.grey),
+                                            borderRadius: BorderRadius.circular(
+                                                density(7))),
+                                        child: Stack(
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  orderOption[i][0],
+                                                  style: TextStyle(
+                                                    fontSize: density(15),
+                                                    color:
+                                                        (orderOptionSelector ==
+                                                                i)
+                                                            ? primaryColor()
+                                                            : Colors.black,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontFamily: "Montserrat",
+                                                  ),
+                                                ),
+                                                sizeheight(density(5)),
+                                                Text(
+                                                  (orderOption[i][2] != null)
+                                                      ? "${orderOption[i][2]}-${orderOption[i][3]}"
+                                                      : "90min Delivery",
+                                                  style: TextStyle(
+                                                    fontSize: density(13),
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: "Montserrat",
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            if (!orderOption[i][5] &&
+                                                orderOption[i][2] != null)
+                                              Positioned(
+                                                top: 5,
+                                                right: density(2),
+                                                child: Text(
+                                                  "Next Day",
+                                                  style:
+                                                      TextStyle(fontSize: 10),
+                                                ),
+                                              )
+                                          ],
                                         ),
                                       ),
                                     )
-                                ]),
-                              )
-                            ],
+                              ],
+                            ),
                           ),
                         ),
+                      sizeheight(6),
+                      if (total != 0) /*payment details */
+                        if (!widget.isHome)
+                          Container(
+                            color: Colors.white,
+                            width: density(390),
+                            padding: EdgeInsets.only(
+                                left: density(20), top: density(10)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Payment Methode",
+                                  style: TextStyle(
+                                    fontSize: density(16),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "Montserrat",
+                                  ),
+                                ),
+                                sizeheight(density(19)),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(children: [
+                                    for (int i = 0;
+                                        i < paymentMethod.length;
+                                        i++)
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            paymentMethodSelector = i;
+                                          });
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              right: density(20),
+                                              bottom: density(10)),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: density(18),
+                                              vertical: density(16)),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius
+                                                  .circular(density(5)),
+                                              border: Border.all(
+                                                  color:
+                                                      (paymentMethodSelector ==
+                                                              i)
+                                                          ? primaryColor()
+                                                          : Colors
+                                                              .grey
+                                                              .withOpacity(
+                                                                  0.4))),
+                                          child: Text(
+                                            paymentMethod[i][0],
+                                            style: TextStyle(
+                                              fontSize: density(14),
+                                              color:
+                                                  (paymentMethodSelector == i)
+                                                      ? primaryColor()
+                                                      : Colors.black,
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: "Montserrat",
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                  ]),
+                                )
+                              ],
+                            ),
+                          ),
                       sizeheight(density(6)),
-                      //payment button
-                      if (!Loading)
+
+                      //loadCart
+                      if (widget.isHome && itemTotal != 0)
                         InkWell(
-                          onTap: () async {
-                            if (log == "IN") {
-                              if (addressList.isNotEmpty && itemTotal != 0) {
-                                setState(() {
-                                  Loading = true;
-                                });
-                                ({});
-                                place();
-                              } else if (itemTotal == 0) {
-                                Fluttertoast.showToast(msg: "Cart is Empty");
-                              } else {
-                                Fluttertoast.showToast(
-                                    msg: "Please add address to continue");
-                                Address();
-                              }
-                            } else {
-                              Fluttertoast.showToast(
-                                  msg: "Please login to place order");
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: ((context) => login())));
-                            }
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: ((context) => cart(
+                                      notify: widget.notify,
+                                    ))));
                           },
                           child: Container(
-                            color: Colors.white,
+                              color: Colors.white,
+                              child: Container(
+                                width: double.infinity,
+                                height: density(52),
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.all(density(20)),
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.circular(density(77)),
+                                    color: primaryColor()),
+                                child: Text(
+                                  "Purchase",
+                                  style: TextStyle(
+                                    fontSize: density(16),
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    fontFamily: "Montserrat",
+                                  ),
+                                ),
+                              )),
+                        ),
+                      //payment button
+                      if (!widget.isHome)
+                        if (!Loading)
+                          InkWell(
+                            onTap: () async {
+                              if (log == "IN") {
+                                if (addressList.isNotEmpty && itemTotal != 0) {
+                                  setState(() {
+                                    Loading = true;
+                                  });
+                                  ({});
+                                  place();
+                                } else if (itemTotal == 0) {
+                                  Fluttertoast.showToast(msg: "Cart is Empty");
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg: "Please add address to continue");
+                                  Address();
+                                }
+                              } else {
+                                Fluttertoast.showToast(
+                                    msg: "Please login to place order");
+                                Navigator.pop(context);
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: ((context) => login())));
+                              }
+                            },
                             child: Container(
-                              width: double.infinity,
-                              height: density(52),
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.all(density(20)),
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.circular(density(77)),
-                                  color: primaryColor()),
-                              child: Text(
-                                (total > 0 && paymentMethodSelector == 0)
-                                    ? "Pay ₹${total}"
-                                    : "Place Order",
-                                style: TextStyle(
-                                  fontSize: density(16),
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  fontFamily: "Montserrat",
+                              color: Colors.white,
+                              child: Container(
+                                width: double.infinity,
+                                height: density(52),
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.all(density(20)),
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.circular(density(77)),
+                                    color: primaryColor()),
+                                child: Text(
+                                  (total > 0 && paymentMethodSelector == 0)
+                                      ? "Pay ₹${total}"
+                                      : "Place Order",
+                                  style: TextStyle(
+                                    fontSize: density(16),
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    fontFamily: "Montserrat",
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
                       if (Loading)
                         Container(
                           color: Colors.white,

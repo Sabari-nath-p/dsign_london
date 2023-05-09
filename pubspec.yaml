@@ -61,6 +61,7 @@ dependencies:
   photo_view: ^0.14.0
   back_button_interceptor: ^6.0.2
   bottom_bar: ^2.0.3
+  flutter_svg: ^2.0.3
 
 dev_dependencies:
   flutter_test:
@@ -120,6 +121,13 @@ flutter:
     - assets/icons/newIcon.png
     - assets/icons/appIcon.png
     - assets/icons/tick.png
+    - assets/icons/home.png
+    - assets/icons/categories.png
+    - assets/icons/bag.png
+    - assets/icons/account.png
+    - assets/icons/bell.png
+
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -132,10 +140,13 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

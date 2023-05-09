@@ -80,7 +80,7 @@ class _productScreenState extends State<productScreen> {
             img["original"],
           );
         }
-      else if (pdata["image"]["thumbnail"] != null)
+      else if (pdata["image"]["orginal"] != null)
         imageLink.add(
           pdata["image"]["original"],
         );
@@ -228,16 +228,73 @@ class _productScreenState extends State<productScreen> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
+                              if (imageLink.length > 0)
+                                Container(
+                                  color: Colors.white,
+                                  height: density(540),
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        child: ImageSlideshow(
+                                          indicatorColor: primaryColor(),
+                                          isLoop: (imageLink.length > 1),
+                                          autoPlayInterval:
+                                              (imageLink.length > 1) ? 6000 : 0,
+                                          children: [
+                                            for (int i = 0;
+                                                i < imageLink.length;
+                                                i++)
+                                              InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    zoomLink = imageLink[i];
+                                                    isZoom = true;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  height: density(540),
+                                                  child: Image.network(
+                                                    imageLink[i],
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                              )
+                                          ],
+                                        ),
+                                      ),
+                                      Positioned(
+                                          top: density(20),
+                                          left: density(20),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.grey.withOpacity(.2),
+                                              child: Icon(
+                                                Icons.arrow_back_ios_new,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ))
+                                    ],
+                                  ),
+                                ),
                               Stack(
                                 children: [
                                   Container(
                                     color: Colors.white,
                                     width: double.infinity,
-                                    height: density(370),
+                                    height: density(120),
                                   ),
                                   Positioned(
                                     left: density(16),
-                                    top: density(260),
+                                    top: density(15),
                                     bottom: density(10),
                                     child: Column(
                                       crossAxisAlignment:
@@ -251,23 +308,55 @@ class _productScreenState extends State<productScreen> {
                                               style: TextStyle(
                                                   fontSize: density(18),
                                                   fontWeight: FontWeight.w600,
-                                                  fontFamily: "Montserrat",
+                                                  fontFamily: "Poppins",
                                                   fontStyle: FontStyle.normal),
                                             ),
                                           ),
                                         ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              (salePrice != 0)
+                                                  ? 'Rs $salePrice'
+                                                  : 'Rs $priceVaritation',
+                                              style: TextStyle(
+                                                  fontSize: density(16),
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: "Poppins"),
+                                            ),
+                                            sizewidth(density(8)),
+                                            if (price != salePrice)
+                                              Text(
+                                                'Rs $price',
+                                                style: TextStyle(
+                                                    fontSize: density(14),
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: "Poppins",
+                                                    decoration: TextDecoration
+                                                        .lineThrough),
+                                              ),
+                                          ],
+                                        ),
                                         sizeheight(density(7)),
                                         Row(
                                           children: [
-                                            Text(
-                                              '$unit',
-                                              style: TextStyle(
-                                                  color: primaryColor(),
-                                                  fontSize: density(16),
-                                                  fontWeight: FontWeight.w600,
-                                                  fontFamily: "Montserrat"),
-                                            ),
-                                            sizewidth(10),
+                                            if (false)
+                                              Text(
+                                                '$unit',
+                                                style: TextStyle(
+                                                    color: primaryColor(),
+                                                    fontSize: density(16),
+                                                    fontWeight: FontWeight.w600,
+                                                    fontFamily: "Poppins"),
+                                              ),
+                                            if (false) sizewidth(10),
                                             SizedBox(
                                               child: RatingBar.builder(
                                                 itemSize: 20,
@@ -295,37 +384,6 @@ class _productScreenState extends State<productScreen> {
                                             )
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              (salePrice != 0)
-                                                  ? 'Rs $salePrice'
-                                                  : 'Rs $priceVaritation',
-                                              style: TextStyle(
-                                                  fontSize: density(20),
-                                                  fontWeight: FontWeight.w600,
-                                                  fontFamily: "Montserrat"),
-                                            ),
-                                            sizewidth(density(8)),
-                                            if (price != salePrice)
-                                              Text(
-                                                'Rs $price',
-                                                style: TextStyle(
-                                                    fontSize: density(16),
-                                                    fontWeight: FontWeight.w500,
-                                                    fontFamily: "Montserrat",
-                                                    decoration: TextDecoration
-                                                        .lineThrough),
-                                              ),
-                                          ],
-                                        ),
                                       ],
                                     ),
                                   ),
@@ -346,7 +404,7 @@ class _productScreenState extends State<productScreen> {
                                             "Out of Stock",
                                             style: TextStyle(
                                                 fontSize: density(16),
-                                                fontFamily: "Montserrat",
+                                                fontFamily: "Poppins",
                                                 color: Colors.white),
                                           ),
                                         )),
@@ -379,35 +437,39 @@ class _productScreenState extends State<productScreen> {
                                                     primaryColor()),
                                           ),
                                         )),
-                                  if (imageLink.length > 0)
-                                    Positioned(
-                                        top: density(28),
-                                        left: density(29),
-                                        right: density(29),
-                                        height: density(225),
-                                        child: ImageSlideshow(
-                                          indicatorColor: primaryColor(),
-                                          isLoop: (imageLink.length > 1),
-                                          autoPlayInterval:
-                                              (imageLink.length > 1) ? 6000 : 0,
-                                          children: [
-                                            for (int i = 0;
-                                                i < imageLink.length;
-                                                i++)
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    zoomLink = imageLink[i];
-                                                    isZoom = true;
-                                                  });
-                                                },
-                                                child: Container(
-                                                    padding: EdgeInsets.all(20),
-                                                    child: Image.network(
-                                                        imageLink[i])),
-                                              )
-                                          ],
-                                        )),
+                                  if (false)
+                                    if (imageLink.length > 0)
+                                      Positioned(
+                                          top: density(28),
+                                          left: density(29),
+                                          right: density(29),
+                                          height: density(225),
+                                          child: ImageSlideshow(
+                                            indicatorColor: primaryColor(),
+                                            isLoop: (imageLink.length > 1),
+                                            autoPlayInterval:
+                                                (imageLink.length > 1)
+                                                    ? 6000
+                                                    : 0,
+                                            children: [
+                                              for (int i = 0;
+                                                  i < imageLink.length;
+                                                  i++)
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      zoomLink = imageLink[i];
+                                                      isZoom = true;
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                      padding:
+                                                          EdgeInsets.all(20),
+                                                      child: Image.network(
+                                                          imageLink[i])),
+                                                )
+                                            ],
+                                          )),
                                   if (qty > 0)
                                     Positioned(
                                         right: density(16),
@@ -471,22 +533,6 @@ class _productScreenState extends State<productScreen> {
                                             ],
                                           ),
                                         )),
-                                  Positioned(
-                                      top: density(40),
-                                      left: density(20),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: CircleAvatar(
-                                          backgroundColor:
-                                              Colors.grey.withOpacity(.2),
-                                          child: Icon(
-                                            Icons.arrow_back_ios_new,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ))
                                 ],
                               ),
                               SizedBox(
@@ -495,7 +541,10 @@ class _productScreenState extends State<productScreen> {
                               if (pdata["variation_options"].isNotEmpty)
                                 Container(
                                   width: density(390),
-                                  color: Colors.white,
+                                  //       color: Colors.white,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(100)),
                                   padding: EdgeInsets.symmetric(
                                       horizontal: density(16),
                                       vertical: density(17)),
@@ -504,14 +553,14 @@ class _productScreenState extends State<productScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        height: density(20),
+                                        height: density(22),
                                         child: Text(
                                           pdata["variation_options"][0]
                                               ["options"][0]["name"],
                                           style: TextStyle(
-                                              fontSize: density(16),
-                                              fontFamily: "Montserrat",
-                                              fontWeight: FontWeight.w500),
+                                              fontSize: density(18),
+                                              fontFamily: "Poppins",
+                                              fontWeight: FontWeight.w900),
                                         ),
                                       ),
                                       SizedBox(
@@ -557,8 +606,16 @@ class _productScreenState extends State<productScreen> {
                                                       if (pdata["variation_options"]
                                                               [i]["image"] !=
                                                           null)
-                                                        imageLink.add(
-                                                            pdata["variation_options"]
+                                                        imageLink.add((pdata["variation_options"]
+                                                                            [i]
+                                                                        ["image"]
+                                                                    [
+                                                                    "orginal"] !=
+                                                                null)
+                                                            ? pdata["variation_options"]
+                                                                    [i]["image"]
+                                                                ["orginal"]
+                                                            : pdata["variation_options"]
                                                                     [i]["image"]
                                                                 ["thumbnail"]);
                                                     });
@@ -566,9 +623,29 @@ class _productScreenState extends State<productScreen> {
                                                     addtoCart();
                                                   },
                                                   child: Container(
-                                                    height: 30,
+                                                    height: 40,
+                                                    width:
+                                                        (pdata["variation_options"]
+                                                                            [i][
+                                                                        "title"]
+                                                                    .length <=
+                                                                2)
+                                                            ? 40
+                                                            : null,
+                                                    padding:
+                                                        (pdata["variation_options"]
+                                                                            [i][
+                                                                        "title"]
+                                                                    .length <=
+                                                                2)
+                                                            ? null
+                                                            : EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        9,
+                                                                    vertical:
+                                                                        2),
                                                     alignment: Alignment.center,
-                                                    padding: EdgeInsets.all(6),
                                                     margin:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 5),
@@ -580,9 +657,16 @@ class _productScreenState extends State<productScreen> {
                                                       border: Border.all(
                                                           color:
                                                               primaryColor()),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
+                                                      borderRadius: BorderRadius.circular(
+                                                          (pdata["variation_options"]
+                                                                              [
+                                                                              i]
+                                                                          [
+                                                                          "title"]
+                                                                      .length <=
+                                                                  2)
+                                                              ? 100
+                                                              : 16),
                                                       //shape: BoxShape.circle
                                                     ),
                                                     child: Text(
@@ -626,7 +710,7 @@ class _productScreenState extends State<productScreen> {
                                           'Product Details',
                                           style: TextStyle(
                                               fontSize: density(16),
-                                              fontFamily: "Montserrat",
+                                              fontFamily: "Poppins",
                                               fontWeight: FontWeight.w500),
                                         ),
                                       ),
@@ -661,7 +745,7 @@ class _productScreenState extends State<productScreen> {
                                     id: id,
                                   ),
                                 ),
-                              sizeheight(density(20)),
+                              sizeheight(density(50)),
                               if (count != 0) sizeheight(density(130))
                             ],
                           ),
@@ -702,7 +786,7 @@ class _productScreenState extends State<productScreen> {
                                       style: TextStyle(
                                           fontSize: density(14),
                                           fontWeight: FontWeight.w600,
-                                          fontFamily: "Montserrat"),
+                                          fontFamily: "Poppins"),
                                     )),
                                 Positioned(
                                     top: density(26),
@@ -712,7 +796,7 @@ class _productScreenState extends State<productScreen> {
                                             fontSize: density(16),
                                             color: primaryColor(),
                                             fontWeight: FontWeight.w600,
-                                            fontFamily: "Montserrat"))),
+                                            fontFamily: "Poppins"))),
                                 Positioned(
                                     right: density(22),
                                     bottom: density(35),
@@ -736,7 +820,7 @@ class _productScreenState extends State<productScreen> {
                                                 fontSize: 14,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w600,
-                                                fontFamily: "Montserrat")),
+                                                fontFamily: "Poppins")),
                                       ),
                                     )),
                                 Positioned(
@@ -747,7 +831,7 @@ class _productScreenState extends State<productScreen> {
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w200,
-                                          fontFamily: "Montserrat"),
+                                          fontFamily: "Poppins"),
                                     )),
                                 Positioned(
                                     right: density(173),

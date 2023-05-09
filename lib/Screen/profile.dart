@@ -127,22 +127,23 @@ class _profileScreenState extends State<profileScreen> {
                         width: w,
                         child: Stack(
                           children: [
-                            Positioned(
-                                left: density(16),
-                                top: density(45),
-                                right: density(334),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: CircleAvatar(
-                                    backgroundColor: primaryColor(),
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.white,
+                            if (false)
+                              Positioned(
+                                  left: density(16),
+                                  top: density(45),
+                                  right: density(334),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: CircleAvatar(
+                                      backgroundColor: primaryColor(),
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
-                                )),
+                                  )),
                             Positioned(
                                 left: density(100),
                                 right: density(100),
@@ -225,7 +226,7 @@ class _profileScreenState extends State<profileScreen> {
                                         height: double.infinity,
                                         color: Colors.white10,
                                       ),
-                                      coinBox("$Total", "  Total"),
+                                      coinBox("$Total", "Total"),
                                     ],
                                   ),
                                 ))
@@ -263,8 +264,8 @@ class _profileScreenState extends State<profileScreen> {
                                       children: [
                                         sizewidth(5),
                                         SizedBox(
-                                            width: 30,
-                                            height: 30,
+                                            width: 40,
+                                            height: 40,
                                             child: Image.asset(
                                                 "assets/icons/profileDetails.png")),
                                         sizewidth(10),
@@ -288,7 +289,7 @@ class _profileScreenState extends State<profileScreen> {
                                     ),
                                   ),
                                 ),
-                                sizeheight(30),
+                                sizeheight(15),
                                 InkWell(
                                   onTap: () {
                                     Navigator.of(context)
@@ -302,8 +303,8 @@ class _profileScreenState extends State<profileScreen> {
                                       children: [
                                         sizewidth(5),
                                         SizedBox(
-                                            width: 30,
-                                            height: 30,
+                                            width: 40,
+                                            height: 40,
                                             child: Image.asset(
                                                 "assets/icons/myOrder.png")),
                                         sizewidth(10),
@@ -327,7 +328,7 @@ class _profileScreenState extends State<profileScreen> {
                                     ),
                                   ),
                                 ),
-                                sizeheight(30),
+                                sizeheight(15),
                                 InkWell(
                                   onTap: () {
                                     Navigator.of(context)
@@ -341,10 +342,12 @@ class _profileScreenState extends State<profileScreen> {
                                       children: [
                                         sizewidth(5),
                                         SizedBox(
-                                            width: 30,
-                                            height: 30,
+                                            width: 40,
+                                            height: 40,
                                             child: Image.asset(
-                                                "assets/icons/myAddress.png")),
+                                              "assets/icons/myAddress.png",
+                                              fit: BoxFit.fill,
+                                            )),
                                         sizewidth(10),
                                         Expanded(
                                           child: Text(
@@ -367,43 +370,44 @@ class _profileScreenState extends State<profileScreen> {
                                   ),
                                 ),
                                 sizeheight(30),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: ((context) =>
-                                                notifcationScreen())));
-                                  },
-                                  child: Container(
-                                    child: Row(
-                                      children: [
-                                        sizewidth(5),
-                                        SizedBox(
-                                            width: 30,
-                                            height: 30,
-                                            child: Image.asset(
-                                                "assets/icons/notification.png")),
-                                        sizewidth(10),
-                                        Expanded(
-                                          child: Text(
-                                            "Notification",
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontFamily: "Montserrat",
+                                if (false)
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: ((context) =>
+                                                  notifcationScreen())));
+                                    },
+                                    child: Container(
+                                      child: Row(
+                                        children: [
+                                          sizewidth(5),
+                                          SizedBox(
+                                              width: 30,
+                                              height: 30,
+                                              child: Image.asset(
+                                                  "assets/icons/notification.png")),
+                                          sizewidth(10),
+                                          Expanded(
+                                            child: Text(
+                                              "Notification",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontFamily: "Montserrat",
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_forward_ios_outlined,
-                                          color: Colors.grey,
-                                        ),
-                                        sizewidth(
-                                          10,
-                                        )
-                                      ],
+                                          Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            color: Colors.grey,
+                                          ),
+                                          sizewidth(
+                                            10,
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
                               ],
                             ),
                           ),
@@ -418,6 +422,9 @@ class _profileScreenState extends State<profileScreen> {
                           padding: EdgeInsets.only(left: 22, bottom: 22),
                           child: InkWell(
                             onTap: () async {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: ((context) => Home())));
                               SharedPreferences pref =
                                   await SharedPreferences.getInstance();
                               Box box = await Hive.openBox("user");
@@ -426,7 +433,6 @@ class _profileScreenState extends State<profileScreen> {
                               isLogged = false;
                               profileUrl =
                                   "http://api.ecom.alpha.logidots.com/storage/3051/conversions/R-thumbnail.jpg";
-                              Navigator.pop(context);
                             },
                             child: Text(
                               "Log Out",
@@ -449,38 +455,43 @@ class _profileScreenState extends State<profileScreen> {
   }
 
   coinBox(String point, String type) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 3),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: density(20),
-                height: density(20),
-                child: Image.asset("assets/icons/coin.png"),
-              ),
-              sizewidth(5),
-              Text(
-                "$point",
-                style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: "Montserrat",
-                    color: Colors.white),
-              )
-            ],
-          ),
-          Text(
-            "$type",
-            style: TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 12,
-                fontFamily: "Montserrat",
-                color: Colors.white.withOpacity(.8)),
-          )
-        ],
+    return Expanded(
+      child: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 3),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (false)
+                  SizedBox(
+                    width: density(20),
+                    height: density(20),
+                    child: Image.asset("assets/icons/coin.png"),
+                  ),
+                Text(
+                  "$point",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: "Montserrat",
+                      color: Colors.white),
+                )
+              ],
+            ),
+            Text(
+              "$type",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  fontSize: 12,
+                  fontFamily: "Montserrat",
+                  color: Colors.white.withOpacity(.8)),
+            )
+          ],
+        ),
       ),
     );
   }

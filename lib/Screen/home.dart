@@ -5,6 +5,7 @@ import 'package:dsign_london/Card/catBox.dart';
 import 'package:dsign_london/Constant/Color.dart';
 import 'package:dsign_london/Constant/custom.dart';
 import 'package:dsign_london/Card/flashSale.dart';
+import 'package:dsign_london/Converter/updateProfile.dart';
 import 'package:dsign_london/Screen/Notification.dart';
 import 'package:dsign_london/Screen/cart.dart';
 import 'package:dsign_london/Screen/login.dart';
@@ -12,8 +13,10 @@ import 'package:dsign_london/Screen/profile.dart';
 import 'package:dsign_london/Screen/searchScreen.dart';
 import 'package:dsign_london/dataType/productData.dart';
 import 'package:dsign_london/dataType/userData.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -109,6 +112,7 @@ class _HomeState extends State<Home> {
   List promoImage = [];
 
   int bottomOption = 0;
+  late Widget option;
 
   @override
   Widget build(BuildContext context) {
@@ -125,369 +129,474 @@ class _HomeState extends State<Home> {
         selectedIndex: bottomOption,
         onTap: (int index) {
           setState(() {
-            bottomOption = index;
+            if (index != 3 || isLogged) bottomOption = index;
+            if (index == 1)
+              option = Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 16,
+                        ),
+                        SizedBox(
+                          width: 110,
+                          height: 60,
+                          child: Image.asset(
+                            "assets/icons/newIcon.png",
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        Expanded(child: Container()),
+                        if (!isLogged)
+                          SizedBox(
+                            width: 19.2,
+                          ),
+                        SizedBox(
+                          width: 19.2,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 27,
+                    ),
+                    catBox(notify: notify),
+                  ],
+                ),
+              ); //cart(notify: notify);
+            if (index == 2)
+              option = cart(
+                notify: notify,
+                isHome: true,
+              );
+            if (index == 3)
+              (isLogged)
+                  ? option = profileScreen()
+                  : {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: ((context) => login())))
+                    };
           });
         },
         items: <BottomBarItem>[
           BottomBarItem(
-            icon: Icon(Icons.home),
+            icon: Image.asset(
+              "assets/icons/home.png",
+              width: 28,
+              height: 28,
+              color: primaryColor(),
+            ),
             title: Text('Home'),
             activeColor: primaryColor(),
           ),
           BottomBarItem(
-              icon: Icon(Icons.category),
+              icon: Image.asset(
+                "assets/icons/categories.png",
+                width: 28,
+                height: 28,
+                color: primaryColor(),
+              ),
               title: Text('Category'),
               activeColor: primaryColor()),
           BottomBarItem(
-            icon: Icon(Icons.local_mall),
+            icon: Stack(
+              children: [
+                Image.asset(
+                  "assets/icons/bag.png",
+                  width: 28,
+                  height: 28,
+                  color: primaryColor(),
+                ),
+                if (count != 0)
+                  Positioned(
+                      right: 1,
+                      top: 1,
+                      left: 20,
+                      bottom: 20,
+                      child: CircleAvatar(
+                        backgroundColor: primaryColor(),
+                        child: Text(
+                          count.toString(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 7,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        radius: 8,
+                      )),
+              ],
+            ),
             title: Text('Cart'),
             activeColor: primaryColor(),
           ),
           BottomBarItem(
-            icon: Icon(Icons.person),
+            icon: Image.asset(
+              "assets/icons/account.png",
+              width: 28,
+              height: 28,
+              color: primaryColor(),
+            ),
             title: Text('Account'),
             activeColor: primaryColor(),
           ),
         ],
       ),
-      body: Container(
-        width: w,
-        height: h,
-        child: Stack(
-          children: [
-            Container(
-              color: Colors.white,
+      body: (bottomOption > 0)
+          ? option
+          : Container(
               width: w,
               height: h,
-              child: Column(
+              child: Stack(
                 children: [
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 16,
-                      ),
-                      SizedBox(
-                        width: 110,
-                        height: 60,
-                        child: Image.asset(
-                          "assets/icons/newIcon.png",
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      Expanded(
-                          child: Container(
-                              alignment: Alignment.centerRight,
-                              child: InkWell(
-                                  onTap: () {
-                                    if (!isLogged) {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: ((context) => login())));
-                                    } else {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: ((context) =>
-                                                  profileScreen())));
-                                    }
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border:
-                                            Border.all(color: Colors.white)),
-                                    child: CircleAvatar(
-                                      //  backgroundColor: (profileUrl ==
-                                      //            "http://api.ecom.alpha.logidots.com/storage/3051/conversions/R-thumbnail.jpg")
-                                      //       ? Colors.white24
-                                      //       : Colors.white,
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        child: Image.network(
-                                          profileUrl,
-                                          //   color: (profileUrl ==
-                                          //           "http://api.ecom.alpha.logidots.com/storage/3051/conversions/R-thumbnail.jpg")
-                                          //       ? Colors.white
-                                          //      : null,
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    ),
-                                  )))),
-                      if (!isLogged)
-                        SizedBox(
-                          width: 19.2,
-                        ),
-                      if (isLogged)
-                        InkWell(
-                          onTap: () {
-                            loadUser();
-                          },
-                          child: InkWell(
-                            onTap: (() {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: ((context) => notifcationScreen())));
-                            }),
-                            child: Icon(
-                              Icons.notifications_none_outlined,
-                              size: 40,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      SizedBox(
-                        width: 19.2,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 27,
-                  ),
                   Container(
-                    width: 358,
-                    height: 48,
-                    margin: EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                        color: Color(0XFFEEECEC),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    color: Colors.white,
+                    width: w,
+                    height: h,
+                    child: Column(
                       children: [
                         SizedBox(
-                          width: 20.7,
+                          height: 50,
                         ),
-                        Icon(
-                          Icons.search,
-                          color: Colors.black,
-                        ),
-                        const SizedBox(
-                          width: 20.7,
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                            ),
+                            SizedBox(
+                              width: 110,
+                              height: 60,
+                              child: Image.asset(
+                                "assets/icons/newIcon.png",
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            Expanded(child: Container()),
+                            if (false)
+                              Expanded(
+                                  child: Container(
+                                      alignment: Alignment.centerRight,
+                                      child: InkWell(
+                                          onTap: () {
+                                            if (!isLogged) {
+                                            } else {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: ((context) =>
+                                                          profileScreen())));
+                                            }
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: Colors.white)),
+                                            child: CircleAvatar(
+                                              //  backgroundColor: (profileUrl ==
+                                              //            "http://api.ecom.alpha.logidots.com/storage/3051/conversions/R-thumbnail.jpg")
+                                              //       ? Colors.white24
+                                              //       : Colors.white,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(100),
+                                                child: Image.network(
+                                                  profileUrl,
+                                                  //   color: (profileUrl ==
+                                                  //           "http://api.ecom.alpha.logidots.com/storage/3051/conversions/R-thumbnail.jpg")
+                                                  //       ? Colors.white
+                                                  //      : null,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              ),
+                                            ),
+                                          )))),
+                            if (!isLogged)
+                              SizedBox(
+                                width: 19.2,
+                              ),
+                            if (isLogged)
+                              InkWell(
+                                onTap: () {
+                                  loadUser();
+                                },
+                                child: InkWell(
+                                  onTap: (() {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: ((context) =>
+                                                notifcationScreen())));
+                                  }),
+                                  child: Image.asset(
+                                    "assets/icons/bell.png",
+                                    width: 35,
+                                    height: 35,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            SizedBox(
+                              width: 19.2,
+                            ),
+                          ],
                         ),
                         SizedBox(
-                          width: 250,
-                          child: TextField(
-                            onSubmitted: (value) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: ((context) => searchScreen(
-                                      notify: notify, slug: value))));
-                            },
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "What are looking ",
-                                hintStyle: TextStyle(
-                                    color: offsetWhite(),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Montserrat')),
+                          height: 27,
+                        ),
+                        Container(
+                          width: 358,
+                          height: 48,
+                          margin: EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                              color: Color(0XFFEEECEC),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 20.7,
+                              ),
+                              Icon(
+                                Icons.search,
+                                color: Colors.black,
+                              ),
+                              const SizedBox(
+                                width: 20.7,
+                              ),
+                              sizeheight(20),
+                              SizedBox(
+                                width: 250,
+                                child: TextField(
+                                  onSubmitted: (value) {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: ((context) => searchScreen(
+                                                notify: notify, slug: value))));
+                                  },
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: "What are looking ",
+                                      hintStyle: TextStyle(
+                                          color: offsetWhite(),
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Montserrat')),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                        Expanded(
+                            child: Container(
+                          height: double.infinity,
+                          width: double.infinity,
+                          padding: EdgeInsets.only(top: .3, left: 1, right: 1),
+                          decoration: BoxDecoration(
+                              color: Colors
+                                  .white, //Color.fromARGB(241, 255, 255, 255),
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25),
+                                  topRight: Radius.circular(25))),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (promoImage.length > 1)
+                                  Container(
+                                    height: 180,
+                                    padding: EdgeInsets.only(
+                                        left: 20,
+                                        right: 20,
+                                        top: 28,
+                                        bottom: 7),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(7),
+                                        child: ImageSlideshow(
+                                          indicatorColor: primaryColor(),
+                                          isLoop: true,
+                                          autoPlayInterval: 3000,
+                                          children: [
+                                            for (int i = 1;
+                                                i < promoImage.length;
+                                                i++)
+                                              promoImage[i]
+                                          ],
+                                        )),
+                                  ),
+                                sizeheight(6),
+                                catBox(
+                                  notify: notify,
+                                ),
+                                flashSale(
+                                  notify: notify,
+                                ),
+                                sizeheight(6),
+                                if (promoImage.length > 0)
+                                  Container(
+                                    width: 390,
+                                    height: 195,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    padding: EdgeInsets.all(15),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: promoImage[0],
+                                    ),
+                                  ),
+                                if (false) sizeheight(16),
+                                if (false)
+                                  Container(
+                                    width: 316,
+                                    height: 111,
+                                    margin:
+                                        EdgeInsets.only(left: 23, right: 51),
+                                    child: Text(
+                                      "Oops we can't find What your were looking for?",
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontFamily: "Montserrat",
+                                          color: Color(0xFFC0C0C0),
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                if (false) sizeheight(16),
+                                if (false)
+                                  Container(
+                                    margin:
+                                        EdgeInsets.only(left: 16, right: 144),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(26),
+                                        color: primaryColor()),
+                                    width: 230,
+                                    height: 52,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Request For a Product",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "Montserrat",
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                sizeheight(60),
+                                if (count > 0) sizeheight(60)
+                              ],
+                            ),
+                          ),
+                        ))
                       ],
                     ),
                   ),
-                  Expanded(
-                      child: Container(
-                    height: double.infinity,
-                    width: double.infinity,
-                    padding: EdgeInsets.only(top: .3, left: 1, right: 1),
-                    decoration: BoxDecoration(
-                        color:
-                            Colors.white, //Color.fromARGB(241, 255, 255, 255),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25),
-                            topRight: Radius.circular(25))),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (promoImage.length > 1)
-                            Container(
-                              height: 180,
-                              padding: EdgeInsets.only(
-                                  left: 20, right: 20, top: 28, bottom: 7),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(7),
-                                  child: ImageSlideshow(
-                                    indicatorColor: primaryColor(),
-                                    isLoop: true,
-                                    autoPlayInterval: 3000,
-                                    children: [
-                                      for (int i = 1;
-                                          i < promoImage.length;
-                                          i++)
-                                        promoImage[i]
-                                    ],
-                                  )),
-                            ),
-                          sizeheight(6),
-                          catBox(
-                            notify: notify,
-                          ),
-                          flashSale(
-                            notify: notify,
-                          ),
-                          sizeheight(6),
-                          if (promoImage.length > 0)
+                  if (count > 0 && false)
+                    Positioned(
+                        bottom: 0,
+                        width: 390,
+                        height: 100,
+                        child: Stack(
+                          children: [
                             Container(
                               width: 390,
-                              height: 195,
+                              height: 100,
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)),
-                              padding: EdgeInsets.all(15),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: promoImage[0],
-                              ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black26,
+                                        spreadRadius: .05,
+                                        blurRadius: 9.2)
+                                  ]),
                             ),
-                          if (false) sizeheight(16),
-                          if (false)
-                            Container(
-                              width: 316,
-                              height: 111,
-                              margin: EdgeInsets.only(left: 23, right: 51),
-                              child: Text(
-                                "Oops we can't find What your were looking for?",
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    fontFamily: "Montserrat",
-                                    color: Color(0xFFC0C0C0),
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          if (false) sizeheight(16),
-                          if (false)
-                            Container(
-                              margin: EdgeInsets.only(left: 16, right: 144),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(26),
-                                  color: primaryColor()),
-                              width: 230,
-                              height: 52,
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Request For a Product",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: "Montserrat",
-                                    color: Colors.white),
-                              ),
-                            ),
-                          sizeheight(60),
-                          if (count > 0) sizeheight(60)
-                        ],
-                      ),
-                    ),
-                  ))
+                            Positioned(
+                                top: 25,
+                                left: 28,
+                                bottom: 40,
+                                child: Icon(
+                                  Icons.shopping_cart_outlined,
+                                  size: 40,
+                                  color: primaryColor(),
+                                )),
+                            Positioned(
+                                top: 26,
+                                left: 76,
+                                child: Text(
+                                  "$sqty items",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Montserrat"),
+                                )),
+                            Positioned(
+                                top: 26,
+                                left: 151,
+                                child: Text("$total",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: primaryColor(),
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: "Montserrat"))),
+                            Positioned(
+                                right: 22,
+                                bottom: 35,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (ctx) => cart(
+                                                  notify: notify,
+                                                )));
+                                  },
+                                  child: Container(
+                                    width: 128,
+                                    height: 42,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(77),
+                                        color: primaryColor()),
+                                    child: Text("View Cart",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: "Montserrat")),
+                                  ),
+                                )),
+                            Positioned(
+                                top: 50,
+                                left: 78,
+                                child: Text(
+                                  "90 mins",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w200,
+                                      fontFamily: "Montserrat"),
+                                )),
+                            Positioned(
+                                right: 173,
+                                bottom: 28,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: 74,
+                                  height: 21,
+                                  color: Color.fromARGB(100, 243, 210, 102),
+                                  child: Text(
+                                    "Save $save",
+                                    style: TextStyle(color: primaryColor()),
+                                  ),
+                                ))
+                          ],
+                        ))
                 ],
               ),
             ),
-            if (count > 0)
-              Positioned(
-                  bottom: 0,
-                  width: 390,
-                  height: 100,
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: 390,
-                        height: 100,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black26,
-                                  spreadRadius: .05,
-                                  blurRadius: 9.2)
-                            ]),
-                      ),
-                      Positioned(
-                          top: 25,
-                          left: 28,
-                          bottom: 40,
-                          child: Icon(
-                            Icons.shopping_cart_outlined,
-                            size: 40,
-                            color: primaryColor(),
-                          )),
-                      Positioned(
-                          top: 26,
-                          left: 76,
-                          child: Text(
-                            "$sqty items",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: "Montserrat"),
-                          )),
-                      Positioned(
-                          top: 26,
-                          left: 151,
-                          child: Text("$total",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: primaryColor(),
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: "Montserrat"))),
-                      Positioned(
-                          right: 22,
-                          bottom: 35,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (ctx) => cart(
-                                        notify: notify,
-                                      )));
-                            },
-                            child: Container(
-                              width: 128,
-                              height: 42,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(77),
-                                  color: primaryColor()),
-                              child: Text("View Cart",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: "Montserrat")),
-                            ),
-                          )),
-                      Positioned(
-                          top: 50,
-                          left: 78,
-                          child: Text(
-                            "90 mins",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w200,
-                                fontFamily: "Montserrat"),
-                          )),
-                      Positioned(
-                          right: 173,
-                          bottom: 28,
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: 74,
-                            height: 21,
-                            color: Color.fromARGB(100, 243, 210, 102),
-                            child: Text(
-                              "Save $save",
-                              style: TextStyle(color: primaryColor()),
-                            ),
-                          ))
-                    ],
-                  ))
-          ],
-        ),
-      ),
     );
   }
 }
