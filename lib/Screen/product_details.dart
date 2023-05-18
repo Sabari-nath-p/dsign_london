@@ -216,7 +216,7 @@ class _productScreenState extends State<productScreen> {
         body: (loading == 1 && pdata != null)
             ? SafeArea(
                 child: Container(
-                  width: 390,
+                  width:double.infinity,
                   color: Colors.white24,
                   height: MediaQuery.of(context).size.height,
                   child: Stack(
