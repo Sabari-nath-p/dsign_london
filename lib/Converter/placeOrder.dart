@@ -85,9 +85,8 @@ class placeOrder {
     data['delivery_time'] = this.deliveryTime;
     data['delivery_fee'] = this.deliveryFee;
     data['total'] = this.total;
-    if (orderId != null) data["payment_gateway_order_id"] = this.orderId;
-    if (paymentId != null) data["payment_gateway_payment_id"] = this.paymentId;
-    if (signature != null) data["payment_gateway_signature"] = this.signature;
+    if (orderId != null) data["payment_intent"] = this.orderId;
+   
     data["customer_contact"] = this.customerContact;
     data["payment_gateway"] = paymentGateway;
     data["use_wallet_points"] = this.useWalletPoints;

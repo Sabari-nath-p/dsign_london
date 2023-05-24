@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -1307,7 +1308,7 @@ class _cartState extends State<cart> {
 
     if (paymentMethodSelector == 0 && total != 0) {
       final Response =
-          await http.post(Uri.parse('$baseUrl/api/orders/razor-pay/generate'),
+          await http.post(Uri.parse('$baseUrl/api/create-payment-intent'),
               headers: {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer $token',
@@ -1318,10 +1319,11 @@ class _cartState extends State<cart> {
 
       if (Response.statusCode == 200 || Response.statusCode == 201) {
         var generatedId = json.decode(Response.body);
-
-        if (generatedId["status"] == "SUCCESS") {
-          porder.orderId = generatedId["payment_gateway_order_id"].toString();
-          loadOnlinePayment(porder);
+        print(Response.body);
+        if (generatedId["error"] == null) {
+          print("working");
+          porder.orderId = generatedId["payment_intent"].toString();
+          loadOnlinePayment(porder, generatedId["client_secret"]);
         }
       } else {
         setState(() {
@@ -1413,39 +1415,36 @@ class _cartState extends State<cart> {
     }
   }
 
-  loadOnlinePayment(placeOrder porder) {
-    Razorpay onlinePay = Razorpay();
-    onlinePay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    onlinePay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    onlinePay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  loadOnlinePayment(placeOrder porder, String clientID) async {
+    try {
+      var gpay = const PaymentSheetGooglePay(
+        merchantCountryCode: "IN",
+        currencyCode: "IND",
+      );
+     
+      await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentIntentClientSecret: clientID,
+        style: ThemeMode.light,
+        merchantDisplayName: "Sabarinath",
+        googlePay: gpay,
+      ));
 
-    var options = {
-      'key': 'rzp_live_INUhPIEH4RpCRx',
-      'name': name.toString(),
-      'order_id': porder.orderId.toString(),
-      'amount': porder.amount! * 100,
-      'prefill': {'contact': phone.toString(), 'email': email.toString()}
-    };
-    onlinePay.open(options);
+      displayPaymentSheet();
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    // Do something when payment succeeds
-
-    porder.paymentId = response.paymentId;
-    porder.signature = response.signature.toString();
-    verifyRazorpay();
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    setState(() {
-      Loading = false;
-    });
-    // Do something when payment fails
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    // Do something when an external wallet was selected
+  void displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      print("Done");
+      verifyRazorpay();
+    } catch (e) {
+      print(e);
+      print("Failed");
+    }
   }
 
   verifyRazorpay() async {

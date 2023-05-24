@@ -13,6 +13,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../Constant/link.dart';
 import '../dataType/adressData.dart';
@@ -195,10 +196,10 @@ class _profileScreenState extends State<profileScreen> {
                                 right: density(55),
                                 child: Container(
                                   width: density(263),
-                                  height: density(63),
+                                  height: density(65),
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 18, vertical: 7),
+                                      horizontal: 18, vertical: 5),
                                   decoration: BoxDecoration(
                                       color: Colors.black12.withOpacity(0.07),
                                       borderRadius: BorderRadius.circular(7),
@@ -218,7 +219,7 @@ class _profileScreenState extends State<profileScreen> {
                                         height: double.infinity,
                                         color: Colors.white10,
                                       ),
-                                      coinBox("$usedCoin", "Used Coins"),
+                                      coinBox("$usedCoin", "Used"),
                                       Container(
                                         width: 1,
                                         margin:
@@ -369,45 +370,48 @@ class _profileScreenState extends State<profileScreen> {
                                     ),
                                   ),
                                 ),
-                                sizeheight(30),
-                                if (false)
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: ((context) =>
-                                                  notifcationScreen())));
-                                    },
-                                    child: Container(
-                                      child: Row(
-                                        children: [
-                                          sizewidth(5),
-                                          SizedBox(
-                                              width: 30,
-                                              height: 30,
-                                              child: Image.asset(
-                                                  "assets/icons/notification.png")),
-                                          sizewidth(10),
-                                          Expanded(
-                                            child: Text(
-                                              "Notification",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontFamily: "Montserrat",
-                                              ),
+                                sizeheight(18),
+                                //    if (false)
+                                InkWell(
+                                  onTap: () async {
+                                    print("working");
+                                    if (!await launchUrl(Uri.parse(
+                                        "https://designlondon.alpha.logidots.com/privacy"))) {
+                                      print("not launched");
+                                    }
+                                  },
+                                  child: Container(
+                                    child: Row(
+                                      children: [
+                                        sizewidth(5),
+                                        SizedBox(
+                                            width: 40,
+                                            height: 40,
+                                            child: Image.asset(
+                                              "assets/icons/policy.png",
+                                              fit: BoxFit.fill,
+                                            )),
+                                        sizewidth(10),
+                                        Expanded(
+                                          child: Text(
+                                            "Policy & Rules",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontFamily: "Montserrat",
                                             ),
                                           ),
-                                          Icon(
-                                            Icons.arrow_forward_ios_outlined,
-                                            color: Colors.grey,
-                                          ),
-                                          sizewidth(
-                                            10,
-                                          )
-                                        ],
-                                      ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios_outlined,
+                                          color: Colors.grey,
+                                        ),
+                                        sizewidth(
+                                          10,
+                                        )
+                                      ],
                                     ),
                                   ),
+                                ),
                               ],
                             ),
                           ),
@@ -458,7 +462,7 @@ class _profileScreenState extends State<profileScreen> {
     return Expanded(
       child: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 3),
+        padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

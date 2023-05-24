@@ -6,10 +6,14 @@ import 'package:dsign_london/dataType/userData.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Hive.initFlutter();
+  Stripe.publishableKey =
+      "pk_live_51N4TEESHFvHiJ90KDqu2rXUqqadOC7QCrtuJsiQ0XLzSIOGpjN3u8r6pLcZy9pYsdaouTsGFJqM1Y7NoU2cKwDmC00mNTLdNsD";
+
   if (!Hive.isAdapterRegistered(productDataAdapter().typeId)) {
     Hive.registerAdapter(productDataAdapter());
   }
